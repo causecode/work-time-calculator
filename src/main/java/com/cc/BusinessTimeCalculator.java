@@ -19,11 +19,13 @@ class BusinessTimeCalculator {
     private Calendar startCal = Calendar.getInstance();
     private Calendar endCal = Calendar.getInstance();
 
-    private String dayStartTimeString = "09:30", dayEndTimeString = "18:30";
+    private Date dayStartTime, dayEndTime;
+
     private DateFormat timeParser = new SimpleDateFormat("HH:mm");
 
     private Integer weekendDay1 = Calendar.SUNDAY;
     private Integer weekendDay2 = Calendar.SATURDAY;
+    private int workingMinutes;
 
     BusinessTimeCalculator(Date startDate, Date endDate) {
         this.startDate = startDate;
@@ -31,6 +33,8 @@ class BusinessTimeCalculator {
 
         startCal.setTime(startDate);
         endCal.setTime(endDate);
+
+        setWorkingTime("09:30", "18:30");
     }
 
     private void validateWeekend(Integer weekendDay) {
@@ -48,13 +52,8 @@ class BusinessTimeCalculator {
         Calendar calendar1 = Calendar.getInstance();
         Calendar calendar2 = Calendar.getInstance();
 
-        try {
-            calendar1.setTime(timeParser.parse(dayStartTimeString));
-            calendar2.setTime(timeParser.parse(dayEndTimeString));
-        } catch (ParseException e) {
-            e.printStackTrace();
-            throw new IllegalArgumentException(e.getMessage());
-        }
+        calendar1.setTime(dayStartTime);
+        calendar2.setTime(dayEndTime);
 
         List<Integer> fields = Arrays.asList(Calendar.YEAR, Calendar.MONTH, Calendar.DATE);
 
@@ -85,7 +84,10 @@ class BusinessTimeCalculator {
         return status;
     }
 
-    Integer getMinutes() {
+    /**
+     * @return Get number of working time minutes between two given dates.
+     */
+    public Integer getMinutes() {
         // TODO Optimize this loop
         while (startCal.getTimeInMillis() <= endCal.getTimeInMillis()) {
             int day = startCal.get(Calendar.DAY_OF_WEEK);
@@ -106,12 +108,37 @@ class BusinessTimeCalculator {
         return minutes;
     }
 
-    Double getDays() {
+    /**
+     * @return Get number of working days between two given dates.
+     */
+    public Double getDays() {
         getMinutes();
-        return ((double) minutes / (60 * 9));
+        return ((double) minutes / workingMinutes);
     }
 
-    void setWeekends(Integer weekendDay1, Integer weekendDay2) {
+    /**
+     * Set start and end working time.
+     * @param startTime Work start time in HH:mm format. (Default 09:30)
+     * @param endTime Work end time in HH:mm format. (Default 16:30)
+     */
+    public void setWorkingTime(String startTime, String endTime) {
+        try {
+            this.dayStartTime = timeParser.parse(startTime);
+            this.dayEndTime = timeParser.parse(endTime);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            throw new IllegalArgumentException(e.getMessage());
+        }
+
+        this.workingMinutes = (int)((this.dayEndTime.getTime() - this.dayStartTime.getTime()) / (1000 * 60));
+    }
+
+    /**
+     * Set weekend days to exclude
+     * @param weekendDay1
+     * @param weekendDay2
+     */
+    public void setWeekends(Integer weekendDay1, Integer weekendDay2) {
         validateWeekend(weekendDay1);
         validateWeekend(weekendDay2);
 

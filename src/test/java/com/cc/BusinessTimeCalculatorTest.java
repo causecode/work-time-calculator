@@ -38,6 +38,15 @@ public class BusinessTimeCalculatorTest {
     }
 
     @Test
+    public void testCalculatorForOneCompleteWorkingHours() {
+        calculator = new BusinessTimeCalculator(parse("05/01/2015 09:30"), parse("05/01/2015 18:30"));
+        calculator.setWorkingTime("09:30", "17:30");
+
+        Assert.assertEquals(1d, calculator.getDays(), 0);
+        Assert.assertEquals(480, calculator.getMinutes(), 0);
+    }
+
+    @Test
     public void testCalculatorForOneDay() {
         calculator = new BusinessTimeCalculator(parse("05/01/2015 09:30"), parse("05/02/2015 09:30"));
 
