@@ -22,8 +22,8 @@ class BusinessTimeCalculator {
     private String dayStartTimeString = "09:30", dayEndTimeString = "18:30";
     private DateFormat timeParser = new SimpleDateFormat("HH:mm");
 
-    private int weekendDay1 = Calendar.SUNDAY;
-    private int weekendDay2 = Calendar.SATURDAY;
+    private Integer weekendDay1 = Calendar.SUNDAY;
+    private Integer weekendDay2 = Calendar.SATURDAY;
 
     BusinessTimeCalculator(Date startDate, Date endDate) {
         this.startDate = startDate;
@@ -33,8 +33,9 @@ class BusinessTimeCalculator {
         endCal.setTime(endDate);
     }
 
-    private void validateWeekend(int weekendDay) {
-        if (weekendDay < 0 && weekendDay > Calendar.SATURDAY) {
+    private void validateWeekend(Integer weekendDay) {
+        // If weekend day value is not Mon, Tue, Wed, Thurs, Fri, Sat or Sunday
+        if (weekendDay != null && (weekendDay < Calendar.SUNDAY || weekendDay > Calendar.SATURDAY)) {
             throw new IllegalArgumentException("Invalid weekend day selected");
         }
     }
@@ -80,7 +81,7 @@ class BusinessTimeCalculator {
 
         // Consider the start time as inclusive and end date as exclusive
         Boolean status = (date.equals(date1) || date.after(date1)) && date.before(date2);
-        log("" + date1 + " > " + date + " < " + date2 + " " + status);
+        //log("" + date1 + " > " + date + " < " + date2 + " " + status);
         return status;
     }
 
@@ -88,7 +89,7 @@ class BusinessTimeCalculator {
         // TODO Optimize this loop
         while (startCal.getTimeInMillis() <= endCal.getTimeInMillis()) {
             int day = startCal.get(Calendar.DAY_OF_WEEK);
-            if (day == Calendar.SATURDAY || day == Calendar.SUNDAY) {
+            if ((weekendDay1 != null && day == weekendDay1) || (weekendDay2 != null && day == weekendDay2)) {
                 startCal.add(Calendar.DAY_OF_MONTH, 1);
                 continue;
             }
@@ -107,10 +108,10 @@ class BusinessTimeCalculator {
 
     Double getDays() {
         getMinutes();
-        return (double) (minutes / (60 * 8));
+        return ((double) minutes / (60 * 9));
     }
 
-    void setWeekends(int weekendDay1, int weekendDay2) {
+    void setWeekends(Integer weekendDay1, Integer weekendDay2) {
         validateWeekend(weekendDay1);
         validateWeekend(weekendDay2);
 
