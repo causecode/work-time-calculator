@@ -6,26 +6,23 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 /*
- * A utility class to calculate business minutes/hours/days between two given dates.
+ * A utility class to calculate working minutes/hours/days between two given dates unlike the simple difference
+ * between two dates.
  * @since 0.0.1
  * @auhor Shashank Agrawal
  */
 class BusinessTimeCalculator {
 
-    private Date startDate;
-    private Date endDate;
-    private Integer minutes = 0;
+    private Date startDate, endDate, dayStartTime, dayEndTime;
 
     private Calendar startCal = Calendar.getInstance();
     private Calendar endCal = Calendar.getInstance();
-
-    private Date dayStartTime, dayEndTime;
 
     private DateFormat timeParser = new SimpleDateFormat("HH:mm");
 
     private Integer weekendDay1 = Calendar.SUNDAY;
     private Integer weekendDay2 = Calendar.SATURDAY;
-    private int workingMinutes;
+    private int minutes, workingMinutes;
 
     BusinessTimeCalculator(Date startDate, Date endDate) {
         this.startDate = startDate;
@@ -117,7 +114,7 @@ class BusinessTimeCalculator {
     }
 
     /**
-     * Set start and end working time.
+     * Set start time of the working day and end time of the working day.
      * @param startTime Work start time in HH:mm format. (Default 09:30)
      * @param endTime Work end time in HH:mm format. (Default 16:30)
      */
@@ -134,9 +131,9 @@ class BusinessTimeCalculator {
     }
 
     /**
-     * Set weekend days to exclude
-     * @param weekendDay1
-     * @param weekendDay2
+     * Set weekend days to exclude. Any of the fields or both can be null.
+     * @param weekendDay1 Weekend day first like Calendar.SATURDAY (default)
+     * @param weekendDay2 Weekend day second like Calendar.SUNDAY (default)
      */
     public void setWeekends(Integer weekendDay1, Integer weekendDay2) {
         validateWeekend(weekendDay1);
