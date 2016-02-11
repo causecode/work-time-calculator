@@ -34,6 +34,12 @@ class BusinessTimeCalculator {
         setWorkingTime("09:30", "18:30");
     }
 
+    /**
+     * Helper method to verify whether the weekends passed by the method {#setWeekends setWeekends()} is one of the 7
+     * days.
+     * @param weekendDay The Calendar integer number of the supplied weekend day
+     * @throws IllegalArgumentException if the supplied weekend integer is not a valid day
+     */
     private void validateWeekend(Integer weekendDay) {
         // If weekend day value is not Mon, Tue, Wed, Thurs, Fri, Sat or Sunday
         if (weekendDay != null && (weekendDay < Calendar.SUNDAY || weekendDay > Calendar.SATURDAY)) {
@@ -41,11 +47,22 @@ class BusinessTimeCalculator {
         }
     }
 
+    /**
+     * Internal helper method to log for debugging.
+     * @param data
+     */
     private void log(Object data) {
         System.out.println(data);
     }
 
-    private Boolean isInWorkingDay() {
+    /**
+     * In the {#getMinutes getMinutes()} method we are increasing the {#startDate} (passed by constructor) minute by
+     * minute up to it matches the {#endDate}. This helper method checks whether the {#startCal} is in the working
+     * hour and is not in the weekend.
+     *
+     * @return <code>true</code> if the {#startDate} is in the working hour of weekdays.
+     */
+    private Boolean isDuringWorkingHour() {
         Calendar calendar1 = Calendar.getInstance();
         Calendar calendar2 = Calendar.getInstance();
 
@@ -93,7 +110,7 @@ class BusinessTimeCalculator {
                 continue;
             }
 
-            if (!isInWorkingDay()) {
+            if (!isDuringWorkingHour()) {
                 startCal.add(Calendar.MINUTE, 1);
                 continue;
             }
