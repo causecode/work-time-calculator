@@ -1,4 +1,4 @@
-package com.cc;
+package com.causecode;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -11,7 +11,7 @@ import java.util.*;
  * @since 0.0.1
  * @auhor Shashank Agrawal
  */
-class BusinessTimeCalculator {
+class WorkTimeCalculator {
 
     private Date startDate, endDate, dayStartTime, dayEndTime;
 
@@ -24,7 +24,7 @@ class BusinessTimeCalculator {
     private Integer weekendDay2 = Calendar.SATURDAY;
     private int minutes, workingMinutes;
 
-    BusinessTimeCalculator(Date startDate, Date endDate) {
+    WorkTimeCalculator(Date startDate, Date endDate) {
         this.startDate = startDate;
         this.endDate = endDate;
 
